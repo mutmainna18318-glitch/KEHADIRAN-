@@ -1,0 +1,8 @@
+{
+  "name": "Kehadiran Saku",
+  "description": "Sistem Kehadiran Kelas Cerdas & Otomatis",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
