@@ -59,13 +59,32 @@ export const authService = {
   },
   
   signIn: async (email: string, pass: string): Promise<AppUser> => {
-    const user: AppUser = { uid: 'user_guru_1', email };
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('ks_user', JSON.stringify(user));
-      // Trigger event manually for the current tab listener
-      window.dispatchEvent(new Event('storage'));
+    const lowerEmail = email.toLowerCase().trim();
+    const isAdmin = lowerEmail === 'admin' || lowerEmail === 'admin@sekolah.sch.id' || lowerEmail === 'admin@gmail.com';
+    
+    if (isAdmin && pass === '123456') {
+      const user: AppUser = { uid: 'admin_user', email: lowerEmail.includes('@') ? lowerEmail : 'admin@sekolah.sch.id' };
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('ks_user', JSON.stringify(user));
+        window.dispatchEvent(new Event('storage'));
+      }
+      return user;
     }
-    return user;
+    
+    if (typeof window !== 'undefined') {
+      const storedDbRaw = localStorage.getItem('ks_user_db');
+      if (storedDbRaw) {
+        const storedDb = JSON.parse(storedDbRaw);
+        if (storedDb.email.toLowerCase().trim() === lowerEmail && storedDb.pass === pass) {
+          const user: AppUser = { uid: 'user_guru_1', email: storedDb.email };
+          localStorage.setItem('ks_user', JSON.stringify(user));
+          window.dispatchEvent(new Event('storage'));
+          return user;
+        }
+      }
+    }
+    
+    throw new Error("Email atau kata sandi salah. Gunakan 'admin' dengan kata sandi '123456'.");
   },
   
   signOut: async (): Promise<void> => {
