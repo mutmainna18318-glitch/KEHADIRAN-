@@ -134,6 +134,7 @@ export default function Home() {
   const handleDateChange = (newDate: string) => {
     setCurrentDate(newDate);
     updateDraftAttendance(students, attendanceRecords, newDate);
+    setActiveTab('presensi');
   };
 
   // Handle Register or Login
@@ -188,6 +189,7 @@ export default function Home() {
         await dataService.updateStudent(updatedRecord);
         setNewStudentName('');
         setNewStudentNis('');
+        setNewStudentGender('Laki-laki');
         setEditingStudent(null);
         setStudentActionMsg({ type: 'success', text: `Data siswa "${updatedRecord.name}" berhasil diperbarui.` });
         await loadData(currentDate);
@@ -223,6 +225,18 @@ export default function Home() {
     setNewStudentNis(student.nis === 'Tidak ada' ? '' : student.nis);
     setNewStudentGender(student.gender);
     setStudentActionMsg(null);
+    
+    // Scroll form into view with a tiny delay and focus the edit field
+    setTimeout(() => {
+      const formElement = document.getElementById('add_student_form');
+      if (formElement) {
+        formElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+      const nameInput = document.getElementById('student_name_input');
+      if (nameInput) {
+        nameInput.focus();
+      }
+    }, 50);
   };
 
   const handleCancelEdit = () => {
@@ -1208,6 +1222,7 @@ export default function Home() {
                         <div className="space-y-1">
                           <label className="block text-xs font-semibold text-slate-600 font-mono">NAMA LENGKAP SISWA</label>
                           <input
+                            id="student_name_input"
                             type="text"
                             value={newStudentName}
                             onChange={(e) => setNewStudentName(e.target.value)}
@@ -1220,6 +1235,7 @@ export default function Home() {
                         <div className="space-y-1">
                           <label className="block text-xs font-semibold text-slate-600 font-mono">NOMOR INDUK SISWA (NIS)</label>
                           <input
+                            id="student_nis_input"
                             type="text"
                             value={newStudentNis}
                             onChange={(e) => setNewStudentNis(e.target.value)}
